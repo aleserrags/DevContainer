@@ -1,0 +1,48 @@
+services:
+    mysql:
+        image: mysql:8.4
+        container_name: c-pm-mysql84
+        restart: "no"
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+        ports:
+            - "33061:3306"
+        volumes:
+            - mysql_data:/var/lib/mysql
+        networks:
+            - dev-net
+
+    postgres:
+        image: postgres:18
+        container_name: c-pe-postgres18
+        restart: "no"
+        environment:
+            POSTGRES_PASSWORD: password
+        ports:
+            - "54321:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - dev-net
+
+    mariadb:
+        image: mariadb:11.4
+        container_name: c-bd-mariadb114
+        restart: "no"
+        environment:
+            MARIADB_ROOT_PASSWORD: password
+        ports:
+            - "33062:3306"
+        volumes:
+            - mariadb_data:/var/lib/mysql
+        networks:
+            - dev-net
+
+networks:
+    dev-net:
+        name: dev-net
+
+volumes:
+    mysql_data:
+    postgres_data:
+    mariadb_data:
