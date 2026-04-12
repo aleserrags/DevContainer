@@ -24,26 +24,27 @@ export PATH="$HOME/DevContainer/bin:$PATH"
 
 ## 4. Usar PHP, Composer e Symfony
 
-Os scripts `cphp`, `ccomposer` e `csymfony` usam **PHP 8.5 por padrão**. Para usar outra versão, passe-a como primeiro argumento.
+O script `cphp` é o único ponto de entrada. Use `-p` para a versão PHP (padrão: `8.5`) e `-s` para o serviço (padrão: `php`).
 
 Execute dentro do diretório do projeto:
 
 ```bash
-# PHP 8.5 (padrão)
-cphp artisan migrate
+# PHP (padrão 8.5)
+cphp script.php
 cphp -r "echo PHP_VERSION;"
+cphp -S localhost:8080
 
-# PHP específico (primeiro argumento)
-cphp 8.3 artisan migrate
-cphp 8.2 -r "echo PHP_VERSION;"
+# PHP versão específica
+cphp -p 8.3 script.php
+cphp -p 8.2 -r "echo PHP_VERSION;"
 
 # Composer
-ccomposer install          # usa 8.5
-ccomposer 8.3 install      # usa 8.3
+cphp -s composer install
+cphp -p 8.3 -s composer install
 
 # Symfony CLI
-csymfony new meu-projeto   # usa 8.5
-csymfony 8.2 new projeto   # usa 8.2
+cphp -s symfony new meu-projeto --webapp
+cphp -p 8.2 -s symfony new meu-projeto
 ```
 
 Versões disponíveis: `8.2`, `8.3`, `8.5`
