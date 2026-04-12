@@ -5,6 +5,7 @@
 ```bash
 docker build -t php:8.2-dev ./php/8.2
 docker build -t php:8.3-dev ./php/8.3
+docker build -t php:8.5-dev ./php/8.5
 ```
 
 ## 2. Subir os bancos
@@ -21,17 +22,31 @@ Adicione no `~/.bashrc` ou `~/.zshrc`:
 export PATH="$HOME/DevContainer/bin:$PATH"
 ```
 
-## 4. Usar PHP e Composer
+## 4. Usar PHP, Composer e Symfony
+
+Os scripts `cphp`, `ccomposer` e `csymfony` usam **PHP 8.5 por padrão**. Para usar outra versão, passe-a como primeiro argumento.
 
 Execute dentro do diretório do projeto:
 
 ```bash
-php83 artisan migrate
-composer83 install
+# PHP 8.5 (padrão)
+cphp artisan migrate
+cphp -r "echo PHP_VERSION;"
 
-php82 artisan migrate
-composer82 install
+# PHP específico (primeiro argumento)
+cphp 8.3 artisan migrate
+cphp 8.2 -r "echo PHP_VERSION;"
+
+# Composer
+ccomposer install          # usa 8.5
+ccomposer 8.3 install      # usa 8.3
+
+# Symfony CLI
+csymfony new meu-projeto   # usa 8.5
+csymfony 8.2 new projeto   # usa 8.2
 ```
+
+Versões disponíveis: `8.2`, `8.3`, `8.5`
 
 ## Conexões
 
