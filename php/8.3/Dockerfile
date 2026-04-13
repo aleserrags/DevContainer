@@ -1,14 +1,17 @@
 FROM php:8.3-fpm
 
-# Instalar unzip para descompactação eficiente de arquivos ZIP do Composer
-RUN apt-get update && apt-get install -y unzip && rm -rf /var/lib/apt/lists/*
+# Instalar dependências de sistema
+RUN apt-get update && apt-get install -y \
+    unzip \
+    libmagickwand-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Extensões PHP via install-php-extensions (IPE)
 COPY --from=ghcr.io/mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN install-php-extensions \
-    curl gd mbstring zip pdo_mysql mysqli pdo_pgsql pgsql intl \
-    imagick bcmath sqlite3 readline opcache xdebug
+    gd zip pdo_mysql mysqli pdo_pgsql pgsql intl ftp \
+    imagick-3.8.0 bcmath xdebug
 
 # Symfony CLI
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash \
