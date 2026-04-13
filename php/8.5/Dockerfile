@@ -1,5 +1,8 @@
 FROM php:8.5-cli
 
+# Instalar unzip para descompactação eficiente de arquivos ZIP do Composer
+RUN apt-get update && apt-get install -y unzip && rm -rf /var/lib/apt/lists/*
+
 # Extensões PHP via install-php-extensions (IPE)
 COPY --from=ghcr.io/mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
