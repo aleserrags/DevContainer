@@ -14,7 +14,16 @@ docker build -t php:8.5-dev ./php/8.5
 cd infra && docker compose up -d
 ```
 
-## 3. Configurar o PATH
+## 3. Pré-requisitos
+
+O `cphp` exige que o git esteja configurado globalmente na máquina antes de executar qualquer comando:
+
+```bash
+git config --global user.name "Seu Nome"
+git config --global user.email "seu.email@example.com"
+```
+
+## 4. Configurar o PATH
 
 Adicione no `~/.bashrc` ou `~/.zshrc`:
 
@@ -55,42 +64,36 @@ Versões disponíveis: `8.2`, `8.3`, `8.5`
 
 ## 5. Servidores de desenvolvimento
 
-O `cphp` **reescreve automaticamente o endereço de bind para `0.0.0.0`** nos comandos de servidor abaixo. Isso é necessário porque dentro de um container o loopback (`127.0.0.1`) é inacessível pelo navegador — apenas `0.0.0.0` (todas as interfaces) permite acesso externo via IP do container.
+O `cphp` **reescreve automaticamente o endereço de bind para `0.0.0.0`** e **mapeia a porta para o host** nos comandos de servidor abaixo, tornando o servidor acessível via `localhost` na máquina real.
 
 | Servidor | Comando | Comportamento automático |
 |---|---|---|
-| PHP built-in | `cphp -S localhost:8080` | bind reescrito para `0.0.0.0:8080` |
-| Laravel Artisan | `cphp artisan serve` | injeta `--host=0.0.0.0` |
-| Symfony server | `cphp -s symfony server:start` | injeta `--allow-all-ip` |
+| PHP built-in | `cphp -S localhost:8080` | bind reescrito para `0.0.0.0:8080`, porta `8080` mapeada no host |
+| Laravel Artisan | `cphp artisan serve` | injeta `--host=0.0.0.0`, porta `8000` mapeada no host |
+| Symfony server | `cphp -s symfony server:start` | injeta `--allow-all-ip`, porta `8000` mapeada no host |
 
 > Passar `--host=localhost` ou `--host=127.0.0.1` explicitamente também é reescrito para `0.0.0.0`. Qualquer outro valor de `--host` é preservado sem alteração.
 
 ### Acessando pelo navegador
 
-Após subir o servidor, descubra o IP do container com:
+A porta é mapeada automaticamente para o host. Basta acessar `http://127.0.0.1:<PORTA>` no navegador da máquina real.
 
 ```bash
-docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -lq)
-```
-
-Em seguida acesse `http://<IP_DO_CONTAINER>:<PORTA>` no navegador.
-
-**Exemplos:**
-
-```bash
-# PHP built-in server — acesse http://<IP>:8080
+# PHP built-in server — acesse http://127.0.0.1:8080
 cphp -S localhost:8080
 
-# Artisan serve — acesse http://<IP>:8000
+# Artisan serve — acesse http://127.0.0.1:8000
 cphp artisan serve
-# porta customizada: acesse http://<IP>:9000
+# porta customizada — acesse http://127.0.0.1:9000
 cphp artisan serve --port=9000
 
-# Symfony server — acesse http://<IP>:8000
+# Symfony server — acesse http://127.0.0.1:8000
 cphp -s symfony server:start
-# ou com porta customizada: acesse http://<IP>:9000
+# porta customizada — acesse http://127.0.0.1:9000
 cphp -s symfony server:start --port=9000
 ```
+
+O endereço de acesso é exibido no terminal antes do servidor subir. Pressione `Ctrl+C` para encerrar.
 
 Todos os demais comandos (`php`, `composer`, `artisan`, `symfony console`, etc.) passam sem nenhuma modificação.
 
