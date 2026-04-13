@@ -51,8 +51,22 @@ Versões disponíveis: `8.2`, `8.3`, `8.5`
 
 ## Conexões
 
-| Banco       | Host (container) | Porta (host) | Usuário    | Senha      |
-|-------------|------------------|--------------|------------|------------|
-| MySQL 8.4   | `c-pm-mysql84`     | `33061`      | `root`     | `password` |
-| MariaDB 11.4| `c-bd-mariadb114`  | `33062`      | `root`     | `password` |
-| PostgreSQL  | `c-pe-postgres18`  | `54321`      | `postgres` | `password` |
+### De dentro de um container (aplicação rodando via `cphp`)
+
+Use o nome do container como host e a **porta padrão** do banco:
+
+| Banco        | HOST              | Porta  | Usuário    | Senha      |
+|--------------|-------------------|--------|------------|------------|
+| MySQL 8.4    | `c-pm-mysql84`    | `3306` | `root`     | `password` |
+| MariaDB 11.4 | `c-bd-mariadb114` | `3306` | `root`     | `password` |
+| PostgreSQL   | `c-pe-postgres18` | `5432` | `postgres` | `password` |
+
+### Do host (máquina local, ferramentas como DBeaver, Datagrip etc.)
+
+Use `localhost` como host e as **portas mapeadas**:
+
+| Banco        | HOST        | Porta   | Usuário    | Senha      |
+|--------------|-------------|---------|------------|------------|
+| MySQL 8.4    | `localhost` | `33061` | `root`     | `password` |
+| MariaDB 11.4 | `localhost` | `33062` | `root`     | `password` |
+| PostgreSQL   | `localhost` | `54321` | `postgres` | `password` |
