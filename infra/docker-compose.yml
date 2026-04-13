@@ -1,5 +1,5 @@
 services:
-    mysql:
+    mysql84:
         image: mysql:8.4
         container_name: c-pm-mysql84
         restart: "no"
@@ -9,10 +9,11 @@ services:
             - "33061:3306"
         volumes:
             - mysql_data:/var/lib/mysql
+            - ./db/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
         networks:
             - dev-net
 
-    postgres:
+    postgres18:
         image: postgres:18
         container_name: c-pe-postgres18
         restart: "no"
@@ -21,11 +22,13 @@ services:
         ports:
             - "54321:5432"
         volumes:
-            - postgres_data:/var/lib/postgresql/data
+            - postgres_data:/var/lib/postgresql
+            - ./db/postgres/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+        command: postgres -c config_file=/etc/postgresql/postgresql.conf
         networks:
             - dev-net
 
-    mariadb:
+    mariadb114:
         image: mariadb:11.4
         container_name: c-bd-mariadb114
         restart: "no"
@@ -35,6 +38,7 @@ services:
             - "33062:3306"
         volumes:
             - mariadb_data:/var/lib/mysql
+            - ./db/mariadb/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
         networks:
             - dev-net
 
