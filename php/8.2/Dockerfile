@@ -5,7 +5,8 @@ COPY --from=ghcr.io/mlocati/php-extension-installer /usr/bin/install-php-extensi
 
 RUN install-php-extensions \
     curl gd mbstring zip pdo_mysql pdo_pgsql intl \
-    imagick bcmath sqlite3 readline opcache xdebug
+    imagick bcmath sqlite3 readline opcache xdebug \
+    ftp mongodb redis sodium
 
 # Symfony CLI
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash \
