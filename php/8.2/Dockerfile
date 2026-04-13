@@ -1,4 +1,4 @@
-FROM php:8.2-cli
+FROM php:8.2-fpm
 
 # Instalar unzip para descompactação eficiente de arquivos ZIP do Composer
 RUN apt-get update && apt-get install -y unzip && rm -rf /var/lib/apt/lists/*
@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y unzip && rm -rf /var/lib/apt/lists/*
 COPY --from=ghcr.io/mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN install-php-extensions \
-    curl gd mbstring zip pdo_mysql pdo_pgsql intl \
+    curl gd mbstring zip pdo_mysql mysqli pdo_pgsql pgsql intl \
     imagick bcmath sqlite3 readline opcache xdebug \
     ftp mongodb redis sodium
 
