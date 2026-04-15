@@ -4,7 +4,16 @@ FROM php:8.3-fpm
 RUN apt-get update && apt-get install -y \
     unzip \
     libmagickwand-dev \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+
+# Certificado CA customizado (opcional — instalado apenas se o arquivo existir)
+COPY certs/ /tmp/certs/
+RUN if [ -f /tmp/certs/certificado.crt ]; then \
+        cp /tmp/certs/certificado.crt /usr/local/share/ca-certificates/ && \
+        update-ca-certificates; \
+    fi \
+    && rm -rf /tmp/certs
 
 # Extensões PHP via install-php-extensions (IPE)
 COPY --from=ghcr.io/mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/

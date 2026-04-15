@@ -3,12 +3,24 @@
 ## 1. Build das imagens PHP
 
 ```bash
-docker build -t php:8.2-dev ./php/8.2
-docker build -t php:8.3-dev ./php/8.3
-docker build -t php:8.5-dev ./php/8.5
+docker build -t php8.2-dev -f php/8.2/Dockerfile .
+docker build -t php8.2-dev -f php/8.3/Dockerfile .
+docker build -t php8.5-dev -f php/8.5/Dockerfile .
 ```
 
-## 2. Subir os bancos
+## 2. Certificados CA customizados (opcional)
+
+Se o ambiente exigir um certificado CA privado (ex: proxy corporativo, serviços internos com SSL), coloque o arquivo `.crt` na pasta `certs/` antes de buildar as imagens:
+
+```bash
+cp /caminho/para/seu-certificado.crt certs/
+```
+
+O Dockerfile de cada versão verifica se o arquivo existe e o instala automaticamente como CA confiável no sistema operacional do container. Se a pasta `certs/` estiver vazia, o build continua normalmente sem erros.
+
+> Apenas arquivos `.crt` no formato PEM são suportados pelo `update-ca-certificates`.
+
+## 3. Subir os bancos
 
 ```bash
 cd infra && docker compose up -d
