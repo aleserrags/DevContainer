@@ -3,9 +3,9 @@
 ## 1. Build das imagens PHP
 
 ```bash
-docker build -t php8.2-dev -f php/8.2/Dockerfile .
-docker build -t php8.2-dev -f php/8.3/Dockerfile .
-docker build -t php8.5-dev -f php/8.5/Dockerfile .
+docker build -t php:8.2-dev -f php/8.2/Dockerfile .
+docker build -t php:8.3-dev -f php/8.3/Dockerfile .
+docker build -t php:8.5-dev -f php/8.5/Dockerfile .
 ```
 
 ## 2. Certificados CA customizados (opcional)
