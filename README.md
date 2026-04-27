@@ -45,7 +45,7 @@ export PATH="$HOME/DevContainer/bin:$PATH"
 
 ## 4. Usar PHP, Composer e Symfony
 
-O script `cphp` é o único ponto de entrada. Use `-p` para a versão PHP (padrão: `8.5`) e `-s` para o serviço (padrão: `php`).
+O script `cphp` é o único ponto de entrada. Use `-p` para a versão PHP (padrão: `8.5`), `-s` para o serviço (padrão: `php`) e `--xdebug` para ativar debug remoto sob demanda.
 
 Execute dentro do diretório do projeto:
 
@@ -108,6 +108,78 @@ cphp -s symfony server:start --port=9000
 O endereço de acesso é exibido no terminal antes do servidor subir. Pressione `Ctrl+C` para encerrar.
 
 Todos os demais comandos (`php`, `composer`, `artisan`, `symfony console`, etc.) passam sem nenhuma modificação.
+
+## 6. Debug com Xdebug + VS Code (DEVSENSE)
+
+O Xdebug fica desligado por padrão e só é ativado quando você usa `--xdebug`.
+
+### Executando com debug
+
+```bash
+# CLI
+cphp --xdebug script.php
+cphp --xdebug -r "echo 'debug';"
+
+# PHP built-in server
+cphp --xdebug -S localhost:8080
+
+# Laravel Artisan
+cphp --xdebug artisan serve
+cphp --xdebug artisan serve --port=9000
+
+# Symfony server
+cphp --xdebug -s symfony server:start
+cphp --xdebug -s symfony server:start --port=9001
+```
+
+Quando `--xdebug` está ativo, o `cphp` injeta automaticamente:
+
+- `--add-host=host.docker.internal:host-gateway`
+- `XDEBUG_MODE=debug,develop`
+- `XDEBUG_TRIGGER=1`
+- `XDEBUG_CONFIG=client_host=host.docker.internal client_port=9003 idekey=VSCODE`
+
+### Exemplo de `launch.json` (DEVSENSE PHP)
+
+Crie `.vscode/launch.json` no projeto PHP que você está depurando:
+
+Configuração mínima que **não funciona sozinha** neste setup:
+
+```json
+{
+  "name": "Listen for Xdebug",
+  "type": "php",
+  "request": "launch"
+}
+```
+
+Use a configuração completa abaixo:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Listen for Xdebug (cphp)",
+      "type": "php",
+      "request": "launch",
+      "port": 9003,
+      "pathMappings": {
+        "/app": "${workspaceFolder}"
+      }
+    }
+  ]
+}
+```
+
+`/app` é o caminho do código dentro do container (montado pelo `cphp`) e precisa mapear para `${workspaceFolder}` no VS Code. Sem `pathMappings`, o call stack pode aparecer, mas os breakpoints não param.
+
+### Troubleshooting rápido
+
+- A porta `9003` precisa estar livre no host.
+- Inicie a configuração de debug no VS Code antes de executar o `cphp --xdebug ...`.
+- Confirme o `pathMappings` com `"/app": "${workspaceFolder}"`.
+- Verifique se a imagem da versão usada (`php:<versao>-dev`) foi rebuildada após mudanças no Dockerfile/extensões.
 
 ## Conexões
 

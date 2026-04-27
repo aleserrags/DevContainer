@@ -2,4 +2,5 @@ projects/*
 !projects/.gitkeep
 certs/*
 !certs/.gitkeep
+.codex
 

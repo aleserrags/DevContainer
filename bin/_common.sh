@@ -4,8 +4,9 @@ VALID_VERSIONS=("8.2" "8.3" "8.5")
 DEFAULT_VERSION="8.5"
 VERSION="$DEFAULT_VERSION"
 SERVICE="php"
+XDEBUG_ENABLED=false
 
-# Parsing das flags -p (versão PHP) e -s (serviço)
+# Parsing das flags -p (versão PHP), -s (serviço) e --xdebug
 # Para imediatamente em qualquer flag/argumento desconhecido
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -17,6 +18,10 @@ while [[ $# -gt 0 ]]; do
         -s)
             shift
             SERVICE="$1"
+            shift
+            ;;
+        --xdebug)
+            XDEBUG_ENABLED=true
             shift
             ;;
         *)
@@ -44,6 +49,20 @@ fi
 # modifiquem os argumentos antes de passá-los ao docker run,
 # sem afetar nenhum outro comando.
 CMD_ARGS=("$@")
+
+# Permite --xdebug em qualquer posição sem repassar a flag ao comando final.
+# Exemplo: cphp artisan serve --xdebug
+if [[ ${#CMD_ARGS[@]} -gt 0 ]]; then
+    FILTERED_ARGS=()
+    for arg in "${CMD_ARGS[@]}"; do
+        if [[ "$arg" == "--xdebug" ]]; then
+            XDEBUG_ENABLED=true
+            continue
+        fi
+        FILTERED_ARGS+=("$arg")
+    done
+    CMD_ARGS=("${FILTERED_ARGS[@]}")
+fi
 
 # Porta do servidor detectado. Vazia = nenhum servidor identificado.
 # Quando definida, run_in_container adiciona -p PORT:PORT ao docker run
@@ -214,6 +233,16 @@ run_in_container() {
         -e GIT_COMMITTER_NAME="$git_name"
         -e GIT_COMMITTER_EMAIL="$git_email"
     )
+
+    if [[ "$XDEBUG_ENABLED" == true ]]; then
+        docker_args+=(
+            --add-host=host.docker.internal:host-gateway
+            -e XDEBUG_MODE=debug,develop
+            -e XDEBUG_TRIGGER=1
+            -e XDEBUG_CONFIG=client_host=host.docker.internal\ client_port=9003\ idekey=VSCODE
+        )
+        echo -e "\033[0;36m  Xdebug ativo:\033[0m escutando no host.docker.internal:9003 (idekey=VSCODE)" >&2
+    fi
 
     if [[ -n "$SERVER_PORT" ]]; then
         # Modo servidor: mapeia a porta para o host (-p PORT:PORT) para que
