@@ -26,7 +26,7 @@ O Dockerfile de cada versão verifica se o arquivo existe e o instala automatica
 cd infra && docker compose up -d
 ```
 
-## 3. Pré-requisitos
+## 4. Pré-requisitos
 
 O `cphp` exige que o git esteja configurado globalmente na máquina antes de executar qualquer comando:
 
@@ -35,19 +35,27 @@ git config --global user.name "Seu Nome"
 git config --global user.email "seu.email@example.com"
 ```
 
-## 4. Configurar o PATH
+## 5. Configurar o PATH
 
 Adicione no `~/.bashrc` ou `~/.zshrc`:
 
 ```bash
-export PATH="$HOME/DevContainer/bin:$PATH"
+export PATH="$HOME/Projetos/DevContainer/bin:$PATH"
 ```
 
-## 4. Usar PHP, Composer e Symfony
+## 6. Usar PHP, Composer e Symfony
 
 O script `cphp` é o único ponto de entrada. Use `-p` para a versão PHP (padrão: `8.5`), `-s` para o serviço (padrão: `php`) e `--xdebug` para ativar debug remoto sob demanda.
 
-Execute dentro do diretório do projeto:
+Execute dentro do diretório do projeto que você quer trabalhar. O `DevContainer` deve ficar em `$HOME/Projetos/DevContainer`, e seus projetos podem ficar em qualquer subdiretório dentro de `$HOME/Projetos`.
+
+Exemplo:
+
+```bash
+cd $HOME/Projetos/meu-projeto
+```
+
+Depois execute:
 
 ```bash
 # PHP (padrão 8.5)
@@ -74,7 +82,7 @@ cphp artisan tinker
 
 Versões disponíveis: `8.2`, `8.3`, `8.5`
 
-## 5. Servidores de desenvolvimento
+## 7. Servidores de desenvolvimento
 
 O `cphp` **reescreve automaticamente o endereço de bind para `0.0.0.0`** e **mapeia a porta para o host** nos comandos de servidor abaixo, tornando o servidor acessível via `localhost` na máquina real.
 
@@ -109,7 +117,7 @@ O endereço de acesso é exibido no terminal antes do servidor subir. Pressione 
 
 Todos os demais comandos (`php`, `composer`, `artisan`, `symfony console`, etc.) passam sem nenhuma modificação.
 
-## 6. Debug com Xdebug + VS Code (DEVSENSE)
+## 8. Debug com Xdebug + VS Code (DEVSENSE)
 
 O Xdebug fica desligado por padrão e só é ativado quando você usa `--xdebug`.
 
@@ -181,7 +189,7 @@ Use a configuração completa abaixo:
 - Confirme o `pathMappings` com `"/app": "${workspaceFolder}"`.
 - Verifique se a imagem da versão usada (`php:<versao>-dev`) foi rebuildada após mudanças no Dockerfile/extensões.
 
-## Conexões
+## 9. Conexões
 
 ### De dentro de um container (aplicação rodando via `cphp`)
 
